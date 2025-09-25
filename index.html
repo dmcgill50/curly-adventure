@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharedCal - Collaborative Calendar</title>
+    <meta name="description" content="A shared calendar that helps coordinate and share schedules with decorative features">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2196F3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SharedCal">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" sizes="32x32" href="icons/icon-32x32.svg">
+    <link rel="icon" type="image/svg+xml" sizes="16x16" href="icons/icon-16x16.svg">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.svg">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/calendar.css">
+    <link rel="stylesheet" href="styles/event-decorations.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">SharedCal</h1>
+                <div class="header-controls">
+                    <button id="todayBtn" class="btn btn-secondary">Today</button>
+                    <div class="navigation-controls">
+                        <button id="prevBtn" class="btn btn-icon">&lt;</button>
+                        <span id="currentMonth" class="current-month"></span>
+                        <button id="nextBtn" class="btn btn-icon">&gt;</button>
+                    </div>
+                    <button id="addEventBtn" class="btn btn-primary">+ Add Event</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Calendar Container -->
+        <main class="calendar-container">
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be dynamically generated -->
+            </div>
+        </main>
+
+        <!-- Event Modal -->
+        <div id="eventModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Add New Event</h2>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                </div>
+                <form id="eventForm" class="event-form">
+                    <div class="form-group">
+                        <label for="eventTitle">Event Title</label>
+                        <input type="text" id="eventTitle" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventDate">Date</label>
+                        <input type="date" id="eventDate" name="date" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eventStartTime">Start Time</label>
+                            <input type="time" id="eventStartTime" name="startTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEndTime">End Time</label>
+                            <input type="time" id="eventEndTime" name="endTime">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <!-- TimeTree-like decorative features -->
+                    <div class="form-group">
+                        <label>Event Color</label>
+                        <div class="color-picker">
+                            <input type="radio" id="color-blue" name="color" value="#2196F3" checked>
+                            <label for="color-blue" class="color-option" style="background-color: #2196F3;"></label>
+                            
+                            <input type="radio" id="color-green" name="color" value="#4CAF50">
+                            <label for="color-green" class="color-option" style="background-color: #4CAF50;"></label>
+                            
+                            <input type="radio" id="color-orange" name="color" value="#FF9800">
+                            <label for="color-orange" class="color-option" style="background-color: #FF9800;"></label>
+                            
+                            <input type="radio" id="color-red" name="color" value="#F44336">
+                            <label for="color-red" class="color-option" style="background-color: #F44336;"></label>
+                            
+                            <input type="radio" id="color-purple" name="color" value="#9C27B0">
+                            <label for="color-purple" class="color-option" style="background-color: #9C27B0;"></label>
+                            
+                            <input type="radio" id="color-teal" name="color" value="#009688">
+                            <label for="color-teal" class="color-option" style="background-color: #009688;"></label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventIcon">Event Icon</label>
+                        <select id="eventIcon" name="icon">
+                            <option value="">No Icon</option>
+                            <option value="🎉">🎉 Party</option>
+                            <option value="💼">💼 Work</option>
+                            <option value="🏥">🏥 Medical</option>
+                            <option value="🎓">🎓 Education</option>
+                            <option value="✈️">✈️ Travel</option>
+                            <option value="🍽️">🍽️ Dining</option>
+                            <option value="🏃">🏃 Exercise</option>
+                            <option value="👨‍👩‍👧‍👦">👨‍👩‍👧‍👦 Family</option>
+                            <option value="💕">💕 Personal</option>
+                            <option value="🏠">🏠 Home</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventSharedWith">Share With</label>
+                        <input type="text" id="eventSharedWith" name="sharedWith" placeholder="Enter email addresses (comma separated)">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Event</button>
+                        <button type="button" id="deleteBtn" class="btn btn-danger" style="display: none;">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Event Detail Modal -->
+        <div id="eventDetailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="detailTitle"></h2>
+                    <button class="close-btn" id="closeDetailModal">&times;</button>
+                </div>
+                <div id="eventDetails" class="event-details">
+                    <!-- Event details will be populated here -->
+                </div>
+                <div class="modal-actions">
+                    <button id="editEventBtn" class="btn btn-primary">Edit</button>
+                    <button id="closeDetailBtn" class="btn btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Install prompt -->
+        <div id="installPrompt" class="install-prompt" style="display: none;">
+            <div class="install-content">
+                <span>📱 Install SharedCal for easy access!</span>
+                <button id="installBtn" class="btn btn-primary">Install</button>
+                <button id="dismissInstall" class="btn btn-text">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/pwa.js"></script>
+</body>
+</html>
